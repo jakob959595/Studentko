@@ -1,0 +1,165 @@
+================================================================================
+
+PROJEKTNI NAČRT: ŠTUDENTKO (studentko)
+
+================================================================================
+
+
+
+1. IME IN VIZIJA PROJEKTA
+
+--------------------------------------------------------------------------------
+
+- Ime aplikacije: Študentko (studentko)
+
+- Glavni namen: Osebni študentski asistent, ki združuje pregled nad urnikom, 
+
+  študijskimi obveznostmi, rezultati in osebnimi financami.
+
+- Način razvoja: Modularno po fazah, od znotraj navzven (najprej podatki in 
+
+  logika, šele nato vmesnik), z lastnim pisanjem kode brez kopiranja celih 
+
+  blokov od AI-ja.
+
+
+
+
+
+2. FUNKCIONALNOSTI PO FAZAH
+
+--------------------------------------------------------------------------------
+
+[FAZA 1] Jedro + Jutranji in tedenski pregled (MVP)
+
+  * Vnos ali uvoz urnika (npr. preko .ics koledarja).
+
+  * Evidenca obveznosti (vaje, kolokviji, izpiti) z roki in statusom 
+
+    (opravljeno / v teku).
+
+  * Avtomatska obvestila v ozadju:
+
+    - Vsako jutro: sporočilo z dnevnim urnikom, vremenom ter seznamom 
+
+      prihajajočih rokov (opozorila za neopravljene vaje se vsak dan 
+
+      stopnjujejo, dokler jih ne odkljukaš).
+
+    - Enkrat tedensko: povzetek obveznosti in dogodkov za prihajajoči teden.
+
+
+
+[FAZA 2] Študijska statistika in ocene
+
+  * Beleženje točk pri vajah, kolokvijih in izpitih po posameznih predmetih.
+
+  * Izračun povprečij, manjkajočih točk do pogoja/ocene in grafični prikaz 
+
+    napredka.
+
+
+
+[FAZA 3] Študentske finance
+
+  * Beleženje mesečnih prihodkov (študentsko delo, štipendija, žepnina) in 
+
+    odhodkov po kategorijah.
+
+  * Mesečni pregled porabe in bilanca.
+
+
+
+
+
+3. TEHNOLOŠKI SKLAD (TECH STACK)
+
+--------------------------------------------------------------------------------
+
+* Backend & logika: Go (Golang)
+
+  -> Čista, eksplicitna sintaksa brez "magije", odličen za API-je, cron 
+
+     opravila in parsanje podatkov.
+
+
+
+* Podatkovna baza: SQLite (kasneje po želji PostgreSQL)
+
+  -> Ena lokalna datoteka (studentko.db), brez nastavljanja strežnikov na 
+
+     začetku.
+
+
+
+* Zgodnja obvestila: Telegram bot ali E-mail
+
+  -> Omogoča takojšnjo uporabo na iPhonu in MacBooku, še preden zgradiš 
+
+     vizualni vmesnik.
+
+
+
+* Frontend (kasneje): Odzivna spletna aplikacija (npr. React + TS ali SvelteKit)
+
+  -> Odpre se v brskalniku na MacBooku, iPadu in iPhonu brez potrebe po 
+
+     ločeni mobilni aplikaciji.
+
+
+
+
+
+4. ORODJA ZA NAMESTITEV NA MACBOOK
+
+--------------------------------------------------------------------------------
+
+1. Homebrew (upravitelj paketov za macOS, če ga še nimaš)
+
+2. Go (ukaz: brew install go) - prevajalnik in orodja za jezik Go
+
+3. Git (ukaz: brew install git ali prek Xcode Command Line Tools)
+
+4. Urejevalnik kode:
+
+   - VS Code + uradni dodatek Go (golang.go) 
+
+     (Priporočilo: brez AI autocomplete dodatkov, da kodo res pišeš sam)
+
+   - ALI GoLand (brezplačno s študentsko licenco)
+
+5. SQLite ogledovalnik (opcijsko): DB Browser for SQLite ali TablePlus 
+
+   (za vizualni pregled zapisov v bazi)
+
+
+
+
+
+5. ORGANIZACIJA MAP IN GITHUB
+
+--------------------------------------------------------------------------------
+
+* Lokacija projekta: Lokalno na disku izven iClouda (npr. ~/Projekti/studentko), 
+
+  da iCloud sinhronizacija ne poškoduje .git mape.
+
+* GitHub: En skupen repozitorij (studentko) za celoten projekt.
+
+* Struktura map:
+
+
+
+  studentko/
+
+  ├── README.md        # Opis projekta, arhitektura in navodila za zagon
+
+  ├── .gitignore       # Obvezno vpiši *.db in .env (za varnost podatkov)
+
+  ├── backend/         # Tukaj začneš: Go koda, baza, logika, obvestila, API
+
+  └── frontend/        # Dodaš šele v kasnejši fazi, ko backend že deluje
+
+
+
+================================================================================
