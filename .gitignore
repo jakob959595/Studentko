@@ -1,1 +1,23 @@
+# Baza podatkov in skrivnosti
+*.db
+*.sqlite
+*.sqlite3
+.env
 
+# Go prevedene datoteke in testi
+/backend/studentko
+*.exe
+*.test
+*.out
+
+# macOS sistemske datoteke
+.DS_Store
+
+# Urejevalniki kode
+.vscode/
+.idea/
+
+# Frontend (za kasneje)
+node_modules/
+dist/
+build/
