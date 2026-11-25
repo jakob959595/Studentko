@@ -1,8 +1,10 @@
 ================================================================================
 
-PROJEKTNI NAČRT: ŠTUDENTKO (studentko)
+PROJEKTNI NAČRT: ŠTUDENTKO (studentko) - verzija 3 (TypeScript)
 
 ================================================================================
+
+
 
 
 
@@ -12,61 +14,109 @@ PROJEKTNI NAČRT: ŠTUDENTKO (studentko)
 
 - Ime aplikacije: Študentko (studentko)
 
-- Glavni namen: Osebni študentski asistent, ki združuje pregled nad urnikom, 
+- Glavni namen: Osebni študentski asistent, ki združuje urnik, študijske
 
-  študijskimi obveznostmi, rezultati in osebnimi financami.
+  obveznosti in rezultate (finance po želji). Uporaben za več študentov,
 
-- Način razvoja: Modularno po fazah, od znotraj navzven (najprej podatki in 
+  ne samo zame.
 
-  logika, šele nato vmesnik), z lastnim pisanjem kode brez kopiranja celih 
+- Način razvoja: Side projekt brez fiksnega roka, glavni cilj je učenje.
 
-  blokov od AI-ja.
+  Modularno po fazah, od znotraj navzven (najprej podatki in logika, šele
+
+  nato vmesnik). Kodo pišem sam. AI uporabljam kot mentorja (razlaga
+
+  konceptov, pregled moje kode, iskanje napak), ne za pisanje celih blokov.
 
 
 
 
 
-2. FUNKCIONALNOSTI PO FAZAH
+2. FAZE
 
 --------------------------------------------------------------------------------
 
-[FAZA 1] Jedro + Jutranji in tedenski pregled (MVP)
+[FAZA 0] Temelji
 
-  * Vnos ali uvoz urnika (npr. preko .ics koledarja).
+  * TypeScript osnove: tipi (types, interfaces), unije (union types),
 
-  * Evidenca obveznosti (vaje, kolokviji, izpiti) z roki in statusom 
+    asyn/await, obravnava napak (try/catch), moduli.
 
-    (opravljeno / v teku).
+  * Postavitev projekta (npm init, tsconfig.json, struktura map, git).
 
-  * Avtomatska obvestila v ozadju:
+  * SQLite + Drizzle ORM (migracije, prvi model: users, obveznosti).
 
-    - Vsako jutro: sporočilo z dnevnim urnikom, vremenom ter seznamom 
-
-      prihajajočih rokov (opozorila za neopravljene vaje se vsak dan 
-
-      stopnjujejo, dokler jih ne odkljukaš).
-
-    - Enkrat tedensko: povzetek obveznosti in dogodkov za prihajajoči teden.
+  * CILJ: preprost program v terminalu, ki doda in izpiše obveznosti iz baze.
 
 
 
-[FAZA 2] Študijska statistika in ocene
+[FAZA 1] Jedro: urnik in obveznosti (MVP)
 
-  * Beleženje točk pri vajah, kolokvijih in izpitih po posameznih predmetih.
+  1.1 Podatkovni model: users, predmeti, obveznosti (vaje, kolokviji, izpiti
 
-  * Izračun povprečij, manjkajočih točk do pogoja/ocene in grafični prikaz 
+      z roki in statusom), dogodki urnika. Vsak uporabnik ima svoje podatke.
 
-    napredka.
+  1.2 Uvoz urnika iz .ics (vključno s ponavljajočimi se dogodki, RRULE).
+
+  1.3 Telegram bot: ukazi (/start, /danes, /teden, /dodaj, /opravljeno).
+
+  1.4 Scheduler v ozadju:
+
+      - Vsako jutro (ali zvečer): dnevni urnik, vreme, prihajajoči roki.
+
+        Opozorila za neopravljene vaje se vsak dan stopnjujejo, dokler
+
+        jih ne odkljukaš.
+
+      - Ob sobotah/nedeljah: povzetek kolokvijev in rokov za oddajo vaj
+
+        za prihajajoči teden.
+
+  1.5 Testi za logiko (roki, stopnjevanje opozoril, ponavljanje dogodkov).
 
 
 
-[FAZA 3] Študentske finance
+[FAZA 2] Deploy in DevOps
 
-  * Beleženje mesečnih prihodkov (študentsko delo, štipendija, žepnina) in 
+  * Docker (Dockerfile), zagon na strežniku (VPS ali Fly.io), da bot teče
 
-    odhodkov po kategorijah.
+    24/7 in ga lahko uporabljajo tudi sošolci.
 
-  * Mesečni pregled porabe in bilanca.
+  * Nastavitve prek .env, redne varnostne kopije baze, logiranje.
+
+  * GitHub Actions: samodejni typecheck, build in testi ob vsakem pushu.
+
+
+
+[FAZA 3] Študijska statistika in ocene
+
+  * Beleženje točk pri vajah, kolokvijih in izpitih po predmetih.
+
+  * Izračun povprečij, manjkajočih točk do pogoja/ocene.
+
+  * Prikaz napredka (najprej v botu, grafi kasneje v spletnem vmesniku).
+
+
+
+[FAZA 4] Spletni vmesnik
+
+  * REST API (Hono ali Fastify nad obstoječo logiko), registracija in prijava.
+
+  * Frontend: React + TypeScript ali SvelteKit, odziven (MacBook, iPad,
+
+    iPhone). Deljenje tipov med backendom in frontendom.
+
+  * Urnik, obveznosti in statistika na enem mestu.
+
+
+
+[FAZA 5] Opcijsko
+
+  * Študentske finance (prihodki, odhodki po kategorijah, mesečna bilanca),
+
+    samo če bom imel še voljo.
+
+  * Druge ideje, ki se pokažejo med razvojem.
 
 
 
@@ -76,35 +126,47 @@ PROJEKTNI NAČRT: ŠTUDENTKO (studentko)
 
 --------------------------------------------------------------------------------
 
-* Backend & logika: Go (Golang)
+* Backend & logika: TypeScript (Node.js)
 
-  -> Čista, eksplicitna sintaksa brez "magije", odličen za API-je, cron 
+  -> Znana JS osnova + strogi tipi, en jezik za celoten projekt (kasneje
 
-     opravila in parsanje podatkov.
+     tudi za frontend).
 
 
 
 * Podatkovna baza: SQLite (kasneje po želji PostgreSQL)
 
-  -> Ena lokalna datoteka (studentko.db), brez nastavljanja strežnikov na 
-
-     začetku.
+  -> Knjižnica: better-sqlite3 + Drizzle ORM (zelo čiste migracije in tipi).
 
 
 
-* Zgodnja obvestila: Telegram bot ali E-mail
+* Obvestila: Telegram bot (knjižnica grammY)
 
-  -> Omogoča takojšnjo uporabo na iPhonu in MacBooku, še preden zgradiš 
-
-     vizualni vmesnik.
+  -> Sodobna knjižnica napisana v TypeScriptu z odličnim avtodopolnjevanjem.
 
 
 
-* Frontend (kasneje): Odzivna spletna aplikacija (npr. React + TS ali SvelteKit)
+* Urnik: uvoz .ics (knjižnici node-ical ali ical.js + rrule za ponavljanja).
 
-  -> Odpre se v brskalniku na MacBooku, iPadu in iPhonu brez potrebe po 
 
-     ločeni mobilni aplikaciji.
+
+* Scheduler: node-cron (opravila v ozadju ob določenih urah).
+
+
+
+* Vreme: Open-Meteo API (brezplačen, brez API ključa).
+
+
+
+* Testiranje: Vitest (hiter test runner z vgrajeno podporo za TypeScript).
+
+
+
+* DevOps: Docker, GitHub Actions, VPS ali Fly.io.
+
+
+
+* Frontend (kasneje): React + TypeScript ali SvelteKit.
 
 
 
@@ -116,21 +178,21 @@ PROJEKTNI NAČRT: ŠTUDENTKO (studentko)
 
 1. Homebrew (upravitelj paketov za macOS, če ga še nimaš)
 
-2. Go (ukaz: brew install go) - prevajalnik in orodja za jezik Go
+2. Node.js LTS (ukaz: brew install node) - vključuje npm
 
 3. Git (ukaz: brew install git ali prek Xcode Command Line Tools)
 
 4. Urejevalnik kode:
 
-   - VS Code + uradni dodatek Go (golang.go) 
+   - VS Code (ima vgrajeno podporo za TypeScript brez dodatkov)
 
-     (Priporočilo: brez AI autocomplete dodatkov, da kodo res pišeš sam)
+     (brez AI autocomplete dodatkov, da kodo res pišeš sam)
 
-   - ALI GoLand (brezplačno s študentsko licenco)
+5. SQLite ogledovalnik (opcijsko): DB Browser for SQLite ali TablePlus
 
-5. SQLite ogledovalnik (opcijsko): DB Browser for SQLite ali TablePlus 
+6. Telegram + BotFather (za ustvarjanje bota in žetona)
 
-   (za vizualni pregled zapisov v bazi)
+7. Docker Desktop (od faze 2 naprej)
 
 
 
@@ -140,11 +202,13 @@ PROJEKTNI NAČRT: ŠTUDENTKO (studentko)
 
 --------------------------------------------------------------------------------
 
-* Lokacija projekta: Lokalno na disku izven iClouda (npr. ~/Projekti/studentko), 
+* Lokacija projekta: lokalno na disku izven iClouda (npr. ~/Projekti/studentko),
 
   da iCloud sinhronizacija ne poškoduje .git mape.
 
-* GitHub: En skupen repozitorij (studentko) za celoten projekt.
+* GitHub: En skupen repozitorij (studentko).
+
+* README.md v angleščini (kot pri ostalih projektih).
 
 * Struktura map:
 
@@ -152,13 +216,57 @@ PROJEKTNI NAČRT: ŠTUDENTKO (studentko)
 
   studentko/
 
-  ├── README.md        # Opis projekta, arhitektura in navodila za zagon
+  ├── README.md          # Opis projekta, arhitektura, navodila za zagon
 
-  ├── .gitignore       # Obvezno vpiši *.db in .env (za varnost podatkov)
+  ├── .gitignore         # Obvezno: *.db, .env, node_modules/, dist/
 
-  ├── backend/         # Tukaj začneš: Go koda, baza, logika, obvestila, API
+  ├── .env.example       # Primer nastavitev brez skrivnosti
 
-  └── frontend/        # Dodaš šele v kasnejši fazi, ko backend že deluje
+  ├── Dockerfile         # Od faze 2
+
+  ├── .github/workflows/ # CI (typecheck + build + testi), od faze 2
+
+  ├── backend/
+
+  │   ├── package.json
+
+  │   ├── tsconfig.json
+
+  │   ├── drizzle.config.ts
+
+  │   ├── src/
+
+  │   │   ├── index.ts   # Vstopna točka
+
+  │   │   ├── db/        # Shema baze in povezava
+
+  │   │   ├── ics/       # Parsanje urnika
+
+  │   │   ├── bot/       # Telegram ukazi
+
+  │   │   └── scheduler/ # Jutranja in tedenska obvestila
+
+  │   └── drizzle/       # Generirane SQL migracije
+
+  └── frontend/          # Dodaš šele v fazi 4
+
+
+
+
+
+6. PRAVILA DELA
+
+--------------------------------------------------------------------------------
+
+* Kodo pišem sam, AI je mentor (razlaga, pregled, iskanje napak).
+
+* Majhni koraki: vsak podkorak se konča z nečim, kar deluje.
+
+* Pogosti commiti z jasnimi sporočili (npr. "add ics parser for weekly events").
+
+* Teste pišem sproti za logiko, ne na koncu.
+
+* Faze lahko prilagajam glede na to, kaj se v praksi res uporablja.
 
 
 
