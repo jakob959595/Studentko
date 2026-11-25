@@ -15,7 +15,7 @@ dist/
 
 # macOS sistemske datoteke
 .DS_Store
+._*
 
 # Logi
 *.log
-._*
